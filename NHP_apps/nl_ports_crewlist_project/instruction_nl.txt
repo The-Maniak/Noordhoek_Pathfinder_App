@@ -1,0 +1,9 @@
+This is the instruction how to get an NL format crewlist from vessel's format crewlist.
+
+1. Click on 'Start fresh' button in order to clear the working directories. In case you would be using just an arrival crew list, it will prevent combining the data with last used departure crew list.
+2. Select the arrival crewlist by pressing "Arrival crew list" button.
+3. (Optional) Select the departure crewlist by pressing "Departure crew list" button.
+4. Once the relevant crewlists are selected, they are copied to directories within the application.
+5. By pressing the "Create a NL crew list" button you will generate an XLSX (!!!) file combining data from one or combined data from both crew lists. The 'ready-document' directory will pop up. 
+6. Please double check if everything else but the crew data is in order ie. ports etc.
+7. Save the file as xls if required and proceed as you normally do with port docs. 

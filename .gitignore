@@ -1,0 +1,10 @@
+NHP_apps/NL ports crewlist project
+NHP_apps/nl_ports_crewlist_project/scrap
+NHP_apps/nl_ports_crewlist_project/NL crewlist.bat
+NHP_apps/resthours/venv
+NHP_apps/uk_ports_crewlist_project/venv
+NHP_venv
+.idea
+scrap
+__pycache__/
+__pycache__/

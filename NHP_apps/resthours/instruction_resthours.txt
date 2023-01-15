@@ -1,0 +1,13 @@
+This feature allows you to get:
+- resthours sheets
+- TOS timesheets
+- Redwise timesheets
+- Scanmar timesheets
+
+In order to get them you have to provide some data yourself first. 
+1. Locate your current crewlist file. Open in and access "Port Doc Copy Sheet". 
+2. Select 'family name', 'given name' and 'rank or rating' data of your crew and copy it.  
+3. Open 'crewmembers.xlsx' - it's in the application directory, 'crew-data' folder.
+4. Paste the data you have copied from vessel format crewlist, "Port Doc Copy Sheet".
+5. Update the shift times, sign on and sign off dates and times and agency names for every of the persons in the list.
+6. Press 'Generate sheets" in your app and in few seconds in the 'output' folder you will find generated files.
