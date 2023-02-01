@@ -137,4 +137,4 @@ class Widget_NHP(QWidget, Ui_widget_NHP):
             QDesktopServices.openUrl(QUrl.fromLocalFile(directory))
         else:
             # Show an error message
-            QMessageBox.critical(self, "Error", "The process failed.")
+            QMessageBox.critical(self, "Error", f"The process failed. {self.process.exitStatus()},")

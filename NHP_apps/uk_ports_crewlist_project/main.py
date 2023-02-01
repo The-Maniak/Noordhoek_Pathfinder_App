@@ -65,10 +65,10 @@ def create_uk_crewlist():
     fal4_template.render(fal4_context)
     fal4_template.save(os.path.join(output_folder, "fal4.docx"))
     # debug statements
-    print(fal5_table_contents)
-    print(fal4_table_contents)
+    # print(fal5_table_contents)
+    # print(fal4_table_contents)
 
 
 if __name__ == '__main__':
     create_uk_crewlist()
-    print("hey")
+    # print("hey")
