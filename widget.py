@@ -23,24 +23,40 @@ class Widget_NHP(QWidget, Ui_widget_NHP):
         self.nl_arrival = os.path.join(self.nl_crewlist_directory, r'vessel-format-crewlist\arrival')
         self.nl_departure = os.path.join(self.nl_crewlist_directory, r'vessel-format-crewlist\departure')
         self.pushButton_freshNL.clicked.connect(self.nl_clear_directories)
-        self.pushButton_arrivalNL.clicked.connect(lambda: self.copy_crewlist(self.nl_arrival))
-        self.pushButton_departureNL.clicked.connect(lambda: self.copy_crewlist(self.nl_departure))
+        self.pushButton_arrivalNL.clicked.connect(lambda: self.copy_file(self.nl_arrival))
+        self.pushButton_departureNL.clicked.connect(lambda: self.copy_file(self.nl_departure))
         self.pushButton_createNL.clicked.connect(self.create_nl_crewlist)
-        self.pushButton_infoNL.clicked.connect(self.info_nl)
+        # self.pushButton_infoNL.clicked.connect(self.info_nl)
+        self.pushButton_infoNL.clicked.connect(lambda: self.instruction(self.nl_crewlist_directory))
 
         # UK port docs associated buttons:
         self.uk_crewlist_directory = os.path.join(self.main_directory, r'NHP_apps\uk_ports_crewlist_project')
         self.pushButton_copyUKcrewlist.clicked.connect(
-            lambda: self.copy_crewlist(r"NHP_apps\uk_ports_crewlist_project\current-crewlist"))
+            lambda: self.copy_file(r"NHP_apps\uk_ports_crewlist_project\current-crewlist"))
         self.pushButton_createUKcrewlist.clicked.connect(self.create_uk_crewlist)
-        self.pushButton_infoUKcrewlist.clicked.connect(self.info_uk)
+        # self.pushButton_infoUKcrewlist.clicked.connect(self.info_uk)
+        self.pushButton_infoUKcrewlist.clicked.connect(lambda: self.instruction(self.uk_crewlist_directory))
 
         # Resthours associated buttons:
         self.resthours_directory = os.path.join(self.main_directory, r'NHP_apps\resthours')
         self.pushButton_generate_resthours.clicked.connect(self.generate_resthours)
-        self.pushButton_info_resthours.clicked.connect(self.info_resthours)
+        self.pushButton_info_resthours.clicked.connect(lambda: self.instruction(self.resthours_directory))
 
-    def copy_crewlist(self, destination_folder):
+        # NTM picker associated buttons:
+        self.ntm_picker_directory = os.path.join(self.main_directory, r'NHP_apps\ntm_picker')
+        self.pushButton_selectNTM.clicked.connect(
+            lambda: self.copy_file(os.path.join(self.ntm_picker_directory, 'current_ntm')))
+        self.pushButton_extractNTM.clicked.connect(self.extractNTM)
+        self.pushButton_infoNTM.clicked.connect(lambda: self.instruction(self.ntm_picker_directory))
+
+        # Qinsy voyage planning associated buttons:
+        self.qinsy_voyage_planning_directory = os.path.join(self.main_directory, r'NHP_apps\qinsy_voyage_planning')
+        self.pushButton_selectVP.clicked.connect(
+            lambda: self.copy_file(os.path.join(self.qinsy_voyage_planning_directory, 'source_voyage_plan')))
+        self.pushButton_createCSV.clicked.connect(self.createQinsyVpCsv)
+        self.pushButton_instructionQinsy.clicked.connect(lambda: self.instruction(self.qinsy_voyage_planning_directory))
+
+    def copy_file(self, destination_folder):
         """Function used for selecting vessel format crew lists and moving them to source folders of applications.
         Works both with the NL and UK crew list apps."""
         destination_directory = os.path.join(os.getcwd(), destination_folder)
@@ -59,9 +75,7 @@ class Widget_NHP(QWidget, Ui_widget_NHP):
     def nl_clear_directories(self):
         arrival_and_departure = [self.nl_arrival, self.nl_departure]
         for directory in arrival_and_departure:
-            print(f'removing {directory}')
             shutil.rmtree(directory, ignore_errors=True)
-            print(f'creating {directory}')
             os.makedirs(directory, exist_ok=True)
 
     def create_nl_crewlist(self):
@@ -72,35 +86,11 @@ class Widget_NHP(QWidget, Ui_widget_NHP):
         self.process.start("python", [os.path.join(self.nl_crewlist_directory, 'main.py')])
         self.process.finished.connect(self.when_finished)
 
-    def info_nl(self):
-        """ Function displaying an instruction window for NL crew list"""
-        instruction_filepath = os.path.join(self.nl_crewlist_directory, 'instruction_nl.txt')
-        with open(instruction_filepath, 'r') as instruction_file:
-            instruction_nl = instruction_file.read()
-        message = QMessageBox()
-        message.setWindowTitle("NL format crewlist - manual")
-        message.setText(instruction_nl)
-        message.setFont(QFont('Times New Roman', 12))
-        message.setFixedSize(600, 400)
-        message.exec_()
-
     def create_uk_crewlist(self):
         """Function triggering the process of creation docx files with UK format FAL4 & FAL5 forms."""
         self.process.start("python", [os.path.join(self.uk_crewlist_directory, "main.py")])
         self.process.setProperty('directory', os.path.join(self.uk_crewlist_directory, r'ready-documents'))
         self.process.finished.connect(self.when_finished)
-
-    def info_uk(self):
-        """ Function displaying an instruction window for UK crew list"""
-        instruction_filepath = os.path.join(self.uk_crewlist_directory, 'instruction_uk.txt')
-        with open(instruction_filepath, 'r') as instruction_uk:
-            instruction_uk = instruction_uk.read()
-        message = QMessageBox()
-        message.setWindowTitle("UK format crewlist - manual")
-        message.setText(instruction_uk)
-        message.setFont(QFont('Times New Roman', 12))
-        message.setFixedSize(600, 400)
-        message.exec_()
 
     def generate_resthours(self):
         """Function generating sheets with rest hours and agency time sheets for given crew data."""
@@ -109,24 +99,38 @@ class Widget_NHP(QWidget, Ui_widget_NHP):
         self.process.start("python", [resthourst_script_filepath])
         self.process.finished.connect(self.when_finished)
 
-    def info_resthours(self):
-        """ Function displaying an instruction window for generating rest hours and agency time sheets"""
-        instruction_filepath = os.path.join(self.resthours_directory, 'instruction_resthours.txt')
-        with open(instruction_filepath, 'r') as file:
-            instruction_resthours = file.read()
+    def extractNTM(self):
+        """Function triggering the process of extracting the corrections from provided NTM file and saving them
+        into an xlsx file."""
+        self.process.setProperty('directory', os.path.join(self.ntm_picker_directory, 'output'))
+        self.process.start("python", [os.path.join(self.ntm_picker_directory, 'ntm_picker.py')])
+        self.process.finished.connect(self.when_finished)
+
+    def createQinsyVpCsv(self):
+        """Function triggering the proces of conversion MS Excel format voyage plan into Qinsy accepted csv file"""
+        self.process.setProperty('directory', os.path.join(self.qinsy_voyage_planning_directory, 'csv_voyage_plan'))
+        self.process.start("python", [os.path.join(self.qinsy_voyage_planning_directory, 'qinsy_voyage_planning.py')])
+        self.process.finished.connect(self.when_finished)
+
+    def instruction(self, directory):
+        """ Function displaying an instruction window for each functionality of the app"""
+        instruction_filepath = os.path.join(directory, 'instruction.txt')
+        with open(instruction_filepath, 'r') as instruction:
+            first_line = instruction.readline().strip()
+            message_body = instruction.read()
         message = QMessageBox()
-        message.setWindowTitle("Resthours and timesheets - manual")
-        message.setText(instruction_resthours)
+        message.setWindowTitle(first_line)
+        message.setText(message_body)
         message.setFont(QFont('Times New Roman', 12))
         message.setFixedSize(600, 400)
         message.setStandardButtons(QMessageBox.Ok)
-        open_directory_button = message.addButton("Crew data directory", QMessageBox.ActionRole)
+        if 'Resthours' in first_line:
+            open_directory_button = message.addButton("Crew data directory", QMessageBox.ActionRole)
+            if message.clickedButton() == open_directory_button:
+                # Open the directory
+                directory = os.path.join(self.resthours_directory, 'crew-data')
+                QDesktopServices.openUrl(QUrl.fromLocalFile(directory))
         message.exec_()
-
-        if message.clickedButton() == open_directory_button:
-            # Open the directory
-            directory = os.path.join(self.resthours_directory, 'crew-data')
-            QDesktopServices.openUrl(QUrl.fromLocalFile(directory))
 
     def when_finished(self):
         """Function triggered by "process.finished" signal of each application, opening a Windows Explorer window

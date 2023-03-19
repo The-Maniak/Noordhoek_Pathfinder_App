@@ -1,0 +1,9 @@
+NTM picker - instructions
+This is the instruction on NTM picker.
+
+1) Source NTM filename must be in one of the following formats:
+- 12wknm23.pdf
+- 08wknm22_week08_2022.pdf
+Two digits for the week number, four letters and two digits for year name.
+This usualy comes as a default, but if for some reason it doesn't please rename the file. 
+
