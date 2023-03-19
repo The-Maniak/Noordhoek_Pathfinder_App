@@ -1,3 +1,4 @@
+Resthours - instruction
 This feature allows you to get:
 - resthours sheets
 - TOS timesheets
